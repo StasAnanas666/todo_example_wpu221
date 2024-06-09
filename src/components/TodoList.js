@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import {format} from "date-fns";
 
 const serverUrl = "http://localhost:5000/tasks";
 
@@ -31,23 +32,38 @@ const TodoList = () => {
         }
     };
 
+    const setPriorityColor = (priority) => {
+        switch(priority) {
+            case "Low":
+                return "table-success";
+            case "Medium":
+                return "table-warning";
+            case "High":
+                return "table-danger";
+            default:
+                return ""; 
+        }
+    }
+
     return (
         <div className="container my-2">
             <table className="table table-hover align-middle my-5">
                 <thead>
                     <tr>
                         <th>Название</th>
-                        <th>Приоритет</th>
                         <th>Выполнить до</th>
                         <th>Действия</th>
                     </tr>
                 </thead>
                 <tbody>
                     {todos.map((todo) => (
-                        <tr key={todo.id}>
+                        <tr key={todo.id} className={setPriorityColor(todo.priority)}>
                             <td>{todo.title}</td>
-                            <td>{todo.priority}</td>
-                            <td>{todo.deadline}</td>
+                            <td>
+                            {
+                                todo.deadline ? format(new Date(todo.deadline), "dd.MM.yyyy HH:mm") : ""
+                            }
+                            </td>
                             <td>
                                 <button
                                     className="btn btn-outline-danger"

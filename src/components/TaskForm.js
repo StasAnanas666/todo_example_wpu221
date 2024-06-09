@@ -49,7 +49,7 @@ const TaskForm = () => {
                     />
 
                     <select className="form-select" value={priority} onChange={e => setPriority(e.target.value)}>
-                        <option defaultValue="" disabled>Выберите приоритет...</option>
+                        <option value="" disabled>Выберите приоритет...</option>
                         <option value="Low">Низкий</option>
                         <option value="Medium">Средний</option>
                         <option value="High">Высокий</option>
