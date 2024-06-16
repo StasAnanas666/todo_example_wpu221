@@ -4,7 +4,7 @@ import axios from "axios";
 const serverUrl = "http://localhost:5000/tasks";
 
 const TaskForm = () => {
-    //создаем состояние todos с нвалным значением [], которое будет изменяться при вызове setTodos
+    //создаем состояние todos с начальным значением [], которое будет изменяться при вызове setTodos
     const [title, setTitle] = useState("");
     const [deadline, setDeadline] = useState("");
     const [priority, setPriority] = useState("");
