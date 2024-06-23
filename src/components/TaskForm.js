@@ -1,27 +1,57 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const serverUrl = "http://localhost:5000/tasks";
 
-const TaskForm = () => {
+const TaskForm = ({ todo, reset }) => {
     //создаем состояние todos с начальным значением [], которое будет изменяться при вызове setTodos
     const [title, setTitle] = useState("");
     const [deadline, setDeadline] = useState("");
     const [priority, setPriority] = useState("");
 
-    //добавление задачи
+    useEffect(() => {
+        if (todo) {
+            setTitle(todo.title);
+            setDeadline(todo.deadline);
+            setPriority(todo.priority);
+        }
+    }, [todo]);
+
+    //добавление/изменение задачи
     const handleSubmit = async (e) => {
+        const token = localStorage.getItem("token");
         e.preventDefault();
         try {
-            const response = await axios.post(serverUrl, {
-                title,
-                deadline,
-                priority,
-            });
-            console.log("ID добавленной задачи: ", response.data.id);
-            setTitle("");
-            setDeadline("");
-            setPriority("");
+            if (todo) {
+                const response = await axios.put(
+                    `${serverUrl}/${todo.id}`,
+                    {
+                        title,
+                        deadline,
+                        priority,
+                    },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                console.log(response.data.message);
+                setTitle("");
+                setDeadline("");
+                setPriority("");
+            } else {
+                const response = await axios.post(
+                    serverUrl,
+                    {
+                        title,
+                        deadline,
+                        priority,
+                    },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                console.log(response.data.message);
+                setTitle("");
+                setDeadline("");
+                setPriority("");
+            }
+            reset();
         } catch (error) {
             console.error("Ошибка добавления задачи: ", error);
         }
@@ -48,8 +78,14 @@ const TaskForm = () => {
                         onChange={(e) => setDeadline(e.target.value)}
                     />
 
-                    <select className="form-select" value={priority} onChange={e => setPriority(e.target.value)}>
-                        <option value="" disabled>Выберите приоритет...</option>
+                    <select
+                        className="form-select"
+                        value={priority}
+                        onChange={(e) => setPriority(e.target.value)}
+                    >
+                        <option value="" disabled>
+                            Выберите приоритет...
+                        </option>
                         <option value="Low">Низкий</option>
                         <option value="Medium">Средний</option>
                         <option value="High">Высокий</option>
@@ -59,7 +95,7 @@ const TaskForm = () => {
                         className="btn btn-outline-primary fw-bold"
                         type="submit"
                     >
-                        +
+                        {todo ? "Изменить" : "Добавить"}
                     </button>
                 </div>
             </form>

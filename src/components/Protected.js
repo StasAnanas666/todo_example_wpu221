@@ -1,40 +1,35 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const serverUrl = "http://localhost:5000/protected";
+const Protected = ({ isAuthenticated, username, role }) => {
+    console.log(isAuthenticated);
+    console.log(username);
+    console.log(role);
 
-const Protected = () => {
-    const [userData, setUserData] = useState(null);
-
-    useEffect(() => {
-        const fetchData = async() => {
-            const token = localStorage.getItem("token");
-            if(token) {
-                try {
-                    const response = await axios.get(serverUrl, {headers: {Authorization: `Bearer ${token}`}});
-                    setUserData(response.data.user);
-                    console.log(userData);
-                } catch (error) {
-                    console.error("Ошибка получения данных пользователя: ", error);
-                }
-            }
-        }
-        fetchData();
-    }, []);
-
-    if(!userData) {
-        <p>Loading...</p>
+    if (!isAuthenticated) {
+        return (
+            <p className="min-h-100 d-flex justify-content-between align-items-center">
+                Loading...
+            </p>
+        );
     }
 
     return (
-        <div className="mt-5 d-flex justify-content-center align-items-center bg-dark">
-            <h2 className="text-center text-light">
-                Пользователь: 
-            </h2>
-            {/* <p>Имя: {userData.username}</p>
-            <p>Роль: {userData.role}</p> */}
-        </div>
-    )
-}
+        <>
+            {isAuthenticated && (
+                <div className="container">
+                <div class="card w-100 my-3">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Пользователь:</h5>
+                        <p class="card-text">Имя: {username}</p>
+                        <p class="card-text">Роль: {role}</p>
+                    </div>
+                </div>
+                </div>
+                
+            )}
+        </>
+    );
+};
 
 export default Protected;

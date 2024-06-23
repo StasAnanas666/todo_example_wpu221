@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 const serverUrl = "http://localhost:5000/login";
 
-const Login = () => {
-    const [username, setUsername] = useState("");
+const Login = ({ setIsAuthenticated, setUsername }) => {
+    const [username, setUsernameState] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -18,6 +18,8 @@ const Login = () => {
                 password,
             });
             localStorage.setItem("token", response.data.token);
+            setIsAuthenticated(true);
+            setUsername(username);
             navigate("/tasks");
         } catch (error) {
             console.error(error);
@@ -45,7 +47,7 @@ const Login = () => {
                         type="text"
                         className="form-control"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) => setUsernameState(e.target.value)}
                     />
                 </div>
                 <div className="form-group my-2">
